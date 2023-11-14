@@ -1,0 +1,107 @@
+
+/interface print：顯示所有網絡介面的列表，包括以太網、無線、VLAN 等。
+/ip address print：列出設備的 IP 地址設定，包括接口名稱、IP 地址和子網掩碼。
+/ip route print：顯示路由表，列出已配置的路由信息，包括目標網絡、下一跳和跃点。
+/ip firewall filter print：顯示防火牆規則列表，這些規則控制數據包的流量。
+/interface wireless print：列出無線介面的設置，包括 SSID、加密設置等。
+/tool bandwidth-test：用於進行帶寬測試，可以用來測試兩個設備之間的網絡帶寬。
+/system resource print：顯示設備的系統資源使用情況，包括 CPU 和內存使用率。
+/interface ethernet switch port print：顯示交換機端口的配置，如果路由器支持交換機功能。
+/system identity print：顯示設備的身份信息，包括主機名。
+/ping：用於進行 ping 測試，可以檢測到達目標主機的可用性。
+/ip dhcp-server lease print：列出 DHCP 伺服器的租用 IP 地址的列表。
+/ip hotspot active print：列出活躍的熱點用戶，如果設置了熱點服務。
+/system package update check-for-updates：檢查 RouterOS 軟體包的更新。
+/tool torch：用於監視特定介面的流量。
+/export file=myconfig：將配置導出為一個檔案，可用於備份和還原配置。
+
+
+# 顯示系統資訊
+/system resource print
+
+# 顯示主機名
+/system identity print
+
+# 顯示用戶資訊
+/user print
+
+# 顯示SSH設定
+/ip ssh print
+
+# 顯示介面資訊
+/interface print
+/interface ethernet print
+/interface wireless print
+
+# 顯示IP地址和路由信息
+/ip address print
+/ip route print
+
+# 顯示DHCP伺服器配置
+/ip dhcp-server print
+/ip dhcp-server lease print
+
+# 顯示防火牆規則
+/ip firewall filter print
+/ip firewall nat print
+
+# 顯示DNS伺服器設定
+/ip dns print
+
+# 顯示NTP設定
+/system ntp client print
+
+# 顯示系統日誌
+/log print
+
+# 顯示裝置的備份
+/system backup print
+
+
+# 進入系統設定模式
+/system
+
+# 設定主機名
+/system identity set name=YourRouterName
+
+# 設定管理者密碼
+/user set 0 password=YourPassword
+
+# 設定管理者SSH登入許可權
+/user set 0 ssh-dsa-key-file=YourSSHKey
+
+# 開啟或關閉 Winbox 服務
+/ip service
+set winbox disabled=no
+
+# 設定系統時區
+/system clock set time-zone-name=YourTimeZone
+
+# 配置網絡介面，例如以太網口
+/interface ethernet set [find name=ether1] comment="WAN Interface" \
+  mac-address=XX:XX:XX:XX:XX:XX name=WAN
+
+/interface ethernet set [find name=ether2] comment="LAN Interface" \
+  mac-address=XX:XX:XX:XX:XX:XX name=LAN
+
+# 配置IP地址和子網掩碼
+/ip address
+add address=YourWANIPAddress/YourWANSubnet interface=WAN
+add address=YourLANIPAddress/YourLANSubnet interface=LAN
+
+# 配置NAT
+/ip firewall nat
+add action=masquerade chain=srcnat out-interface=WAN
+
+# 開啟DHCP伺服器
+/ip dhcp-server
+add address-pool=YourDHCPPool disabled=no interface=LAN name=YourDHCPName
+
+# 設定DNS伺服器
+/ip dns set servers=YourDNSServer
+
+# 保存設定
+/system backup save name=initial_config
+
+# 重新啟動設備
+/system reboot
